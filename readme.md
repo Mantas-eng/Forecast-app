@@ -1,4 +1,7 @@
 1. Build the Project
+   to install node modules
+
+npm install
 
 npm run build
 
