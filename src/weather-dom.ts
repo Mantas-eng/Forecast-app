@@ -30,6 +30,7 @@ let currentPage = 1;
 export function renderForecasts(filteredForecasts: Forecast[] = forecasts) {
   const container = document.getElementById('forecasts-list');
   if (!container) return;
+  
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = currentPage * pageSize;
@@ -79,6 +80,12 @@ export function renderForecasts(filteredForecasts: Forecast[] = forecasts) {
   renderPagination(filteredForecasts); 
 }
 
+function changePage(pageNumber: number) {
+  if (pageNumber < 1 || pageNumber > Math.ceil(forecasts.length / pageSize)) return;
+  currentPage = pageNumber;
+  renderForecasts();
+}
+
 function renderPagination(filteredForecasts: Forecast[] = forecasts) {
   const paginationContainer = document.getElementById('pagination');
   if (!paginationContainer) return;
@@ -87,19 +94,20 @@ function renderPagination(filteredForecasts: Forecast[] = forecasts) {
 
   paginationContainer.innerHTML = `
      <div class="pagination">
-      <button class="pagination-previous" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(1)">First</button>
-      <button class="pagination-previous" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Previous</button>
+      <button class="pagination-previous" ${currentPage === 1 ? 'disabled' : ''} data-page="1">First</button>
+      <button class="pagination-previous" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}">Previous</button>
       <span class="pagination-ellipsis">&hellip;</span>
-      <button class="pagination-next" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next</button>
-      <button class="pagination-next" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${totalPages})">Last</button>
+      <button class="pagination-next" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Next</button>
+      <button class="pagination-next" ${currentPage === totalPages ? 'disabled' : ''} data-page="${totalPages}">Last</button>
     </div>
   `;
-}
 
-function changePage(pageNumber: number) {
-  if (pageNumber < 1 || pageNumber > Math.ceil(forecasts.length / pageSize)) return;
-  currentPage = pageNumber;
-  renderForecasts();
+  paginationContainer.querySelectorAll('button[data-page]').forEach(button => {
+    button.addEventListener('click', () => {
+      const pageNumber = Number((button as HTMLButtonElement).getAttribute('data-page'));
+      changePage(pageNumber);
+    });
+  });
 }
 
 export async function addForecast(query: string): Promise<boolean> {
