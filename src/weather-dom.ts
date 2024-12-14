@@ -66,7 +66,6 @@ export function renderForecasts(filteredForecasts: Forecast[] = forecasts) {
     })
     .join('');
 
-  // Add event listeners to remove buttons
   const removeButtons = container.querySelectorAll('button[data-id]');
   removeButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
@@ -128,7 +127,6 @@ export async function addForecast(query: string): Promise<boolean> {
   }
 }
 
-// Function to remove a forecast
 export function removeForecast(id: string) {
   const index = forecasts.findIndex((forecast) => forecast.id === id);
   if (index > -1) {
